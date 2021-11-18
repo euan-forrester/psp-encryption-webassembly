@@ -25,7 +25,7 @@
 #include "Core/MIPS/MIPS.h"
 
 // To avoid pulling in the entire HLE.h.
-extern MIPSState *currentMIPS;
+//extern MIPSState *currentMIPS; // EMCC_CHANGE: Declared in MIPS/MIPS.cpp which pulls in lots of files, and we don't need this variable
 
 namespace Memory
 {

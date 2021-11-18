@@ -541,8 +541,12 @@ const HLEFunction sceChnnlsv[] =
     {0X21BE78B4, &WrapI_U<sceChnnlsv_21BE78B4>,      "sceChnnlsv_21BE78B4", 'i', "x"    },
 };
 
+extern "C" { // EMCC_CHANGE
+
 void Register_sceChnnlsv()
 {
     RegisterModule("sceChnnlsv", ARRAY_SIZE(sceChnnlsv), sceChnnlsv);
     kirk_init();
+}
+
 }

@@ -41,4 +41,6 @@ int sceSdSetMember_(pspChnnlsvContext2& ctx, u8* data, int alignedLen);
 int sceChnnlsv_21BE78B4_(pspChnnlsvContext2& ctx);
 int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key);
 
+extern "C" { // EMCC_CHANGE
 void Register_sceChnnlsv();
+}
