@@ -49,10 +49,10 @@ u8 *GetPointer(const u32 address) {
     } else {
         static bool reported = false;
         if (!reported) {
-            Reporting::ReportMessage("Unknown GetPointer %08x PC %08x LR %08x", address, currentMIPS->pc, currentMIPS->r[MIPS_REG_RA]);
+            //Reporting::ReportMessage("Unknown GetPointer %08x PC %08x LR %08x", address, currentMIPS->pc, currentMIPS->r[MIPS_REG_RA]); // EMCC_CHANGE: Pulling in the reporting drags in all sorts of stuff
             reported = true;
         }
-        Core_MemoryException(address, currentMIPS->pc, MemoryExceptionType::WRITE_BLOCK);
+        //Core_MemoryException(address, currentMIPS->pc, MemoryExceptionType::WRITE_BLOCK); // EMCC_CHANGE: Pulling in Core.cpp drags in all sorts of stuff
         return nullptr;
     }
 }
@@ -75,10 +75,10 @@ inline void ReadFromHardware(T &var, const u32 address) {
     } else {
         static bool reported = false;
         if (!reported) {
-            Reporting::ReportMessage("ReadFromHardware: Invalid address %08x near PC %08x LR %08x", address, currentMIPS->pc, currentMIPS->r[MIPS_REG_RA]);
+            //Reporting::ReportMessage("ReadFromHardware: Invalid address %08x near PC %08x LR %08x", address, currentMIPS->pc, currentMIPS->r[MIPS_REG_RA]); // EMCC_CHANGE: Pulling in the reporting drags in all sorts of stuff
             reported = true;
         }
-        Core_MemoryException(address, currentMIPS->pc, MemoryExceptionType::READ_WORD);
+        //Core_MemoryException(address, currentMIPS->pc, MemoryExceptionType::READ_WORD); // EMCC_CHANGE: Pulling in Core.cpp drags in all sorts of stuff
         var = 0;
     }
 }
@@ -100,10 +100,10 @@ inline void WriteToHardware(u32 address, const T data) {
     } else {
         static bool reported = false;
         if (!reported) {
-            Reporting::ReportMessage("WriteToHardware: Invalid address %08x near PC %08x LR %08x", address, currentMIPS->pc, currentMIPS->r[MIPS_REG_RA]);
+            //Reporting::ReportMessage("WriteToHardware: Invalid address %08x near PC %08x LR %08x", address, currentMIPS->pc, currentMIPS->r[MIPS_REG_RA]); // EMCC_CHANGE: Pulling in the reporting drags in all sorts of stuff
             reported = true;
         }
-        Core_MemoryException(address, currentMIPS->pc, MemoryExceptionType::WRITE_WORD);
+        //Core_MemoryException(address, currentMIPS->pc, MemoryExceptionType::WRITE_WORD); // EMCC_CHANGE: Pulling in Core.cpp drags in all sorts of stuff
     }
 }
 
