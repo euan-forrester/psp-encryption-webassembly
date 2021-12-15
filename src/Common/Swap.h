@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include <stdlib.h> // EMCC_CHANGE: emcc (at least as installed by homebrew) doesn't seem to like cstdlib.h
+#include <cstdlib>
 
 #include "Common/CommonTypes.h"
 
