@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "Common/Swap.h" // EMCC_CHANGE: Needed to add this
+
 typedef struct _pspChnnlsvContext1 {
     /** Cipher mode */
     s32_le mode;
@@ -41,6 +43,4 @@ int sceSdSetMember_(pspChnnlsvContext2& ctx, u8* data, int alignedLen);
 int sceChnnlsv_21BE78B4_(pspChnnlsvContext2& ctx);
 int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key);
 
-extern "C" { // EMCC_CHANGE
 void Register_sceChnnlsv();
-}
