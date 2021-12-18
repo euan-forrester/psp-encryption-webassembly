@@ -88,12 +88,21 @@ struct Syscall
     u32 nid;
 };
 
+/* EMCC_CHANGE: Declared in MIPS/MIPS.cpp which pulls in lots of files, and we don't need this variable
 #define PARAM(n) currentMIPS->r[MIPS_REG_A0 + n]
 #define PARAM64(n) (currentMIPS->r[MIPS_REG_A0 + n] | ((u64)currentMIPS->r[MIPS_REG_A0 + n + 1] << 32))
 #define PARAMF(n) currentMIPS->f[12 + n]
 #define RETURN(n) currentMIPS->r[MIPS_REG_V0] = n
 #define RETURN64(n) {u64 RETURN64_tmp = n; currentMIPS->r[MIPS_REG_V0] = RETURN64_tmp & 0xFFFFFFFF; currentMIPS->r[MIPS_REG_V1] = RETURN64_tmp >> 32;}
 #define RETURNF(fl) currentMIPS->f[0] = fl
+*/
+// EMCC_CHANGE: Instead just some empty declarations of these macros so that the code compiles
+#define PARAM(n) n
+#define PARAM64(n) n
+#define PARAMF(n) n
+#define RETURN(n) 
+#define RETURN64(n) 
+#define RETURNF(fl) 
 
 const char *GetFuncName(const char *module, u32 nib);
 const char *GetFuncName(int module, int func);

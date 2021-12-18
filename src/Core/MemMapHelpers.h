@@ -25,7 +25,7 @@
 #include "Core/MIPS/MIPS.h"
 
 // To avoid pulling in the entire HLE.h.
-extern MIPSState *currentMIPS;
+//extern MIPSState *currentMIPS; // EMCC_CHANGE: Declared in MIPS/MIPS.cpp which pulls in lots of files, and we don't need this variable
 
 namespace Memory
 {
@@ -38,7 +38,7 @@ inline void Memcpy(const u32 to_address, const void *from_data, const u32 len, c
             tag = "Memcpy";
             tagLen = sizeof("Memcpy") - 1;
         }
-        NotifyMemInfo(MemBlockFlags::WRITE, to_address, len, tag, tagLen);
+        //NotifyMemInfo(MemBlockFlags::WRITE, to_address, len, tag, tagLen); // EMCC_CHANGE: Declared in Core/Debugger/MemBlockInfo.cpp, which brings in a lot of files
     }
     // if not, GetPointer will log.
 }
@@ -51,7 +51,7 @@ inline void Memcpy(void *to_data, const u32 from_address, const u32 len, const c
             tag = "Memcpy";
             tagLen = sizeof("Memcpy") - 1;
         }
-        NotifyMemInfo(MemBlockFlags::READ, from_address, len, tag, tagLen);
+        //NotifyMemInfo(MemBlockFlags::READ, from_address, len, tag, tagLen); // EMCC_CHANGE: Declared in Core/Debugger/MemBlockInfo.cpp, which brings in a lot of files
     }
     // if not, GetPointer will log.
 }
@@ -68,8 +68,8 @@ inline void Memcpy(const u32 to_address, const u32 from_address, const u32 len, 
                 tag = tagData;
                 tagLen = snprintf(tagData, sizeof(tagData), "Memcpy/%s", srcTag.c_str());
             }
-            NotifyMemInfo(MemBlockFlags::READ, from_address, len, tag, tagLen);
-            NotifyMemInfo(MemBlockFlags::WRITE, to_address, len, tag, tagLen);
+            //NotifyMemInfo(MemBlockFlags::READ, from_address, len, tag, tagLen); // EMCC_CHANGE: Declared in Core/Debugger/MemBlockInfo.cpp, which brings in a lot of files
+            //NotifyMemInfo(MemBlockFlags::WRITE, to_address, len, tag, tagLen); // EMCC_CHANGE: Declared in Core/Debugger/MemBlockInfo.cpp, which brings in a lot of files
         }
     }
     // if not, GetPointer will log.

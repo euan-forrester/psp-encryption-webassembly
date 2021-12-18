@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "Common/Swap.h" // EMCC_CHANGE: Needed to add this
+
 typedef struct _pspChnnlsvContext1 {
     /** Cipher mode */
     s32_le mode;
