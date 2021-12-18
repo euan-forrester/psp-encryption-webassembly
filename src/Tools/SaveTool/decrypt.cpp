@@ -114,7 +114,52 @@ int decrypt_file(const char *decrypted_filename,
     return retval;
 }
 
-extern "C" { // EMCC_CHANGE: See change to .cpp at top of file
+extern "C" { // begin EMCC_CHANGE: This is a wrapper for decrypt_data(), similar to decrypt_file() above, but intended for passing in a memory buffer from javascript
+
+int decrypt_buffer(unsigned char *data, int *len, unsigned char *gamekey)
+{
+    int aligned_len = align16(*len);
+
+    int retval = 0;
+
+    int mainSdkVersion = 6; // ???
+
+    unsigned char *aligned_data = NULL;
+    unsigned char *aligned_gamekey = NULL;
+
+    if ((aligned_data = (unsigned char *) aligned_alloc(0x10, aligned_len)) == NULL) {
+        retval = -3;
+        goto out1;
+    }
+
+    if ((aligned_gamekey = (unsigned char *) aligned_alloc(0x10, 0x10)) == NULL) {
+        retval = -4;
+        goto out2;
+    }
+
+    memcpy(aligned_gamekey, gamekey, 0x10);
+    memset(aligned_data, 0, aligned_len);
+    memcpy(aligned_data, data, *len);
+
+    if ((retval = decrypt_data(gamekey ? (mainSdkVersion >= 4 ? 5 : 3) : 1, // 5 for sdk >= 4, else 3
+                    aligned_data, len, &aligned_len,
+                    aligned_gamekey)) < 0) {
+        retval -= 100;
+        goto out3;
+    }
+
+    memcpy(data, aligned_data, *len);
+
+ out3:
+    free(aligned_gamekey);
+ out2:
+    free(aligned_data);
+ out1:
+ out:
+    return retval;
+}
+
+} // end EMCC_CHANGE
 
 /* Do the actual hardware decryption.
    mode is 3 for saves with a cryptkey, or 1 otherwise
@@ -173,5 +218,3 @@ int decrypt_data(unsigned int mode,
     /* All done */
     return 0;
 }
-
-} // EMCC_CHANGE

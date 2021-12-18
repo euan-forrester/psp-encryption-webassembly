@@ -21,6 +21,13 @@
 
 #include "Common/CommonTypes.h"
 
+// begin EMCC_CHANGE
+#if defined(__EMSCRIPTEN__)
+#include <endian.h>
+#define COMMON_LITTLE_ENDIAN 1
+#endif
+// end EMCC_CHANGE
+
 // Android
 #if defined(__ANDROID__)
 #include <sys/endian.h>
