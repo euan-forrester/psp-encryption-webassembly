@@ -11,11 +11,11 @@ If new functions are added that you want to be able to call from Javascript, the
 
 Suggestions are welcome!
 
-##Exported functions
+## Exported functions
 - `init_kirk()` *** Be sure to call this first! ***
 - `decrypt_buffer()` Decrypts a buffer containing a save file
 
-##Instructions
+## Instructions
 
 - Go to the Releases tab and download the latest `.js` and `.wasm` files
 - Copy the files into your project in an appropriate directory
@@ -43,7 +43,7 @@ Here's what I had to do:
 - Serving the file when running locally on the desktop: https://github.com/emscripten-core/emscripten/issues/10114#issuecomment-569561505 (bottom part)
 - Making the file run when everything is served from a remote webserver: good luck! If you can find a better method than me, I'd love to hear it!
 
-##Building it yourself
+## Building it yourself
 
 `brew install emscripten`
 `brew install make` (the default version of `make` on MacOS doesn't support `.RECIPEPREFIX`, so requires tabs rather than spaces)
@@ -53,7 +53,7 @@ Then 2 files will be written to the `/out` directory that can be copied into you
 
 `gmake clean` to clean the `out/` directory
 
-###Alternative builds
+### Alternative builds
 
 By default, the project compiles to web assembly with a Javascript harness. You can build the entirety of the C++ code to Javascript only or webassembly only by changing compiler flags in the `makefile`:
 
