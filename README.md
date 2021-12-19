@@ -13,7 +13,8 @@ Suggestions are welcome!
 
 ## Exported functions
 - `init_kirk()` *** Be sure to call this first! ***
-- `decrypt_buffer()` Decrypts a buffer containing a save file
+- `decrypt_save_buffer()` Decrypts a buffer containing a save file
+- `encrypt_save_buffer()` Encrypts a buffer containing a save file
 
 ## Instructions
 

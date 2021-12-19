@@ -19,7 +19,7 @@ TOOLS_SOURCES := $(wildcard src/Tools/*.c) $(wildcard src/Tools/**/*.cpp)
 
 ROOT_INCLUDES := $(wildcard src/*.h)
 
-EXPORTED_FUNCTIONS := '["_kirk_init","_decrypt_buffer","_malloc","_free"]'
+EXPORTED_FUNCTIONS := '["_kirk_init","_decrypt_save_buffer","_encrypt_save_buffer","_malloc","_free"]'
 EXPORTED_RUNTIME_METHODS := '["ccall","cwrap","setValue","getValue"]'
 
 .PHONY: release debug clean

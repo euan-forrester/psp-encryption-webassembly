@@ -116,13 +116,13 @@ int decrypt_file(const char *decrypted_filename,
 
 extern "C" { // begin EMCC_CHANGE: This is a wrapper for decrypt_data(), similar to decrypt_file() above, but intended for passing in a memory buffer from javascript
 
-int decrypt_buffer(unsigned char *data, int *len, unsigned char *gamekey)
+int decrypt_save_buffer(unsigned char *data, int *len, unsigned char *gamekey)
 {
     int aligned_len = align16(*len);
 
     int retval = 0;
 
-    int mainSdkVersion = 6; // ???
+    const int mainSdkVersion = 6; // ???
 
     unsigned char *aligned_data = NULL;
     unsigned char *aligned_gamekey = NULL;
