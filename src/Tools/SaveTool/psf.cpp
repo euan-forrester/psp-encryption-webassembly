@@ -11,6 +11,8 @@
  * $Id: psf.c 1560 2005-12-10 01:16:32Z jim $
  */
 
+// EMCC_CHANGE: Renamed to .cpp because it's called from C++
+
 #include "psf.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,7 +78,8 @@ int find_psf_section(const char *name,
             && (sectBufLen < dataLen) && (sectBufLoc < dataLen))
                 {
                         /* Check if this is the section we want */
-                        if (!stricmp((char *)&data[strLoc + nameLoc], name))
+                        //if (!stricmp((char *)&data[strLoc + nameLoc], name)) // EMCC_CHANGE
+                        if (!strcasecmp((char *)&data[strLoc + nameLoc], name))
                         {
                                 /* Update the location and size */
                                 *location = &data[headLen + sectBufLoc];

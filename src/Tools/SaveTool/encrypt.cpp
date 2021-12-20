@@ -180,9 +180,78 @@ int encrypt_file(const char *plaintext_filename,
 
 extern "C" { // begin EMCC_CHANGE: This is a wrapper for encrypt_data(), similar to encrypt_file() above, but intended for passing in a memory buffer from javascript
 
-int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *paramssfo_data, int *paramssfo_len, unsigned char *gamekey)
+// Note that output_filename is the basename of the file which will be written out (e.g. "DRACULA.BIN")
+// Note that the contents of data, data_len, and paramssfo_data will all be changed by this function
+
+int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *paramssfo_data, int paramssfo_len, char *output_filename, unsigned char *gamekey)
 {
-    return 0;
+    if (!data || !data_len || !paramssfo_data || !paramssfo_len || !output_filename || !gamekey) {
+        return -1;
+    }
+
+    if (paramssfo_len != 0x1330) {
+        return -2;
+    }
+
+    int retval = 0;
+
+    int aligned_data_len = align16(*data_len);
+
+    unsigned char *aligned_data = NULL;
+    unsigned char *aligned_gamekey = NULL;
+    unsigned char *hash = NULL;
+
+    if ((aligned_data = (unsigned char *) aligned_alloc(0x10, aligned_data_len)) == NULL) {
+        retval = -3;
+        goto cleanup;
+    }
+
+    if (gamekey) {
+        if ((aligned_gamekey = (unsigned char *) aligned_alloc(0x10, 0x10)) == NULL) {
+            retval = -4;
+            goto cleanup;
+        }
+    }
+
+    if ((hash = (unsigned char *) aligned_alloc(0x10, 0x10)) == NULL) {
+        retval = -5;
+        goto cleanup;
+    }
+
+    if (gamekey) {
+        memcpy(aligned_gamekey, gamekey, 0x10);
+    }
+    memset(aligned_data, 0, aligned_data_len);
+    memcpy(aligned_data, data, *data_len);
+
+    /* Do the encryption */
+
+    if ((retval = encrypt_data( gamekey ? (5) : 1,
+                                data,
+                                data_len, &aligned_data_len,
+                                hash,
+                                aligned_gamekey)) < 0) {
+        retval -= 1000;
+        goto cleanup;
+    }
+
+    /* Update the param.sfo hashes */
+
+    if ((retval = update_hashes(paramssfo_data, paramssfo_len,
+                                output_filename, hash,
+                                paramssfo_data[0x11b0]>>4/*gamekey ? 3 : 1*/)) < 0) { // Copied from https://github.com/BrianBTB/SED-PC/blob/master/SED/encrypt.cpp#L198
+        retval -= 2000;
+        goto cleanup;
+    }
+
+    memcpy(data, aligned_data, *data_len);
+
+cleanup:
+    if (hash)               free(hash);
+    if (aligned_gamekey)    free(aligned_gamekey);
+    if (aligned_data)       free(aligned_data);
+
+    return retval;
 }
 
 } // end EMCC_CHANGE
