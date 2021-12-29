@@ -213,7 +213,11 @@ int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *param
         }
     }
 
-    printf("aligned_gamekey: %08x, aligned_gamekey[0]: %02x\n", (unsigned int)aligned_gamekey, aligned_gamekey[0]);
+    printf("aligned_gamekey: %08x, aligned_gamekey: ", (unsigned int)aligned_gamekey);
+    for (int i = 0; i < 0x10; i++) {
+        printf("%02x", aligned_gamekey[i]);
+    }
+    printf("\n");
 
     if ((hash = (unsigned char *) aligned_alloc(0x10, 0x10)) == NULL) {
         retval = -5;
@@ -226,15 +230,13 @@ int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *param
     memset(aligned_data, 0, aligned_data_len);
     memcpy(aligned_data, data, *data_len);
 
-    printf("aligned_gamekey: %08x, aligned_gamekey[0]: %02x\n", (unsigned int)aligned_gamekey, aligned_gamekey[0]);
+    printf("aligned_gamekey: %08x, aligned_gamekey: ", (unsigned int)aligned_gamekey);
+    for (int i = 0; i < 0x10; i++) {
+        printf("%02x", aligned_gamekey[i]);
+    }
+    printf("\n");
 
     /* Do the encryption */
-
-    printf("a paramssfo_data: ");
-    for (int i = 0; i < 20; i++) {
-        printf("%02x", paramssfo_data[i]);
-    }
-    printf("...\n");
 
     if ((retval = encrypt_data( gamekey ? (5) : 1,
                                 aligned_data,
@@ -247,19 +249,6 @@ int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *param
 
     /* Update the param.sfo hashes */
 
-    printf("just before update_hashes(): ");
-    printf("paramssfo_data: ");
-    for (int i = 0; i < 20; i++) {
-        printf("%02x", paramssfo_data[i]);
-    }
-    printf("...\n");
-    printf("paramssfo_len: 0x%x, output_filename '%s', encryptmode: %d\n", paramssfo_len, output_filename, paramssfo_data[0x11b0]>>4);
-    printf("hash: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", hash[i]);
-    }
-    printf("\n");
-
     if ((retval = update_hashes(paramssfo_data, paramssfo_len,
                                 output_filename, hash,
                                 paramssfo_data[0x11b0]>>4/*gamekey ? 3 : 1*/)) < 0) { // Copied from https://github.com/BrianBTB/SED-PC/blob/master/SED/encrypt.cpp#L198
@@ -267,26 +256,17 @@ int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *param
         goto cleanup;
     }
 
-    printf("just after update_hashes(): ");
-    printf("paramssfo_data: ");
-    for (int i = 0; i < 20; i++) {
-        printf("%02x", paramssfo_data[i]);
-    }
-    printf("...\n");
-    printf("paramssfo_len: 0x%x, output_filename '%s', encryptmode: %d\n", paramssfo_len, output_filename, paramssfo_data[0x11b0]>>4);
-    printf("hash: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", hash[i]);
-    }
-    printf("\n");
-
     memcpy(data, aligned_data, *data_len);
 
     printf("d\n");
 
 cleanup:
     if (hash)               free(hash);
-    printf("e: aligned_gamekey: %08x, aligned_gamekey[0]: %02x\n", (unsigned int)aligned_gamekey, aligned_gamekey[0]);
+    printf("aligned_gamekey: %08x, aligned_gamekey: ", (unsigned int)aligned_gamekey);
+    for (int i = 0; i < 0x10; i++) {
+        printf("%02x", aligned_gamekey[i]);
+    }
+    printf("\n");
     if (aligned_gamekey)    free(aligned_gamekey);
     printf("f\n");
     if (aligned_data)       free(aligned_data);
@@ -309,27 +289,6 @@ int encrypt_data(unsigned int mode,
          unsigned char *hash,
          unsigned char *cryptkey)
 {
-    printf("\n\nStart of encrypt_data()\n");
-    printf("mode: %d, *dataLen: %d, *alignedLen: %d\n", mode, *dataLen, *alignedLen);
-
-    printf("data: ");
-    for (int i = 0; i < 20; i++) {
-        printf("%02x", data[i]);
-    }
-    printf("...\n");
-
-    printf("hash: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", hash[i]);
-    }
-    printf("\n");
-
-    printf("cryptkey: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", cryptkey[i]);
-    }
-    printf("\n");
-
     pspChnnlsvContext1 ctx1;
     pspChnnlsvContext2 ctx2;
 
@@ -344,151 +303,35 @@ int encrypt_data(unsigned int mode,
 
     /* Build the 0x10-byte IV and setup encryption */
         //if (sceChnnlsv_ABFDFC8B_(&ctx2, mode, 1, data, cryptkey) < 0) // EMCC_CHANGE
-
-    printf("\nJust before sceSdCreateList_():\n");
-    printf("ctx2.mode: %d ctx2.unkn: %d\n", ctx2.mode, ctx2.unkn);
-    printf("ctx2.cryptedData: ");
-    for (int i = 0; i < 0x92; i++) {
-        printf("%02x", ctx2.cryptedData[i]);
-    }
-    printf("\n");
-
-
-        if (sceSdCreateList_(ctx2, mode, 1, data, cryptkey) < 0)
+         if (sceSdCreateList_(ctx2, mode, 1, data, cryptkey) < 0)
                 return -1;
         //if (sceChnnlsv_E7833020_(&ctx1, mode) < 0)
-
-    printf("\nJust before sceSdSetIndex_():\n");
-    printf("ctx1.mode: %d ctx1.keyLength: %d\n", ctx1.mode, ctx1.keyLength);
-    printf("ctx1.result: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.result[i]);
-    }
-    printf("\n");
-    printf("ctx1.key: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.key[i]);
-    }
-    printf("\n");
-
         if (sceSdSetIndex_(ctx1, mode) < 0) // EMCC_CHANGE
                 return -2;
         //if (sceChnnlsv_F21A1FCA_(&ctx1, data, 0x10) < 0) // EMCC_CHANGE
-
-    printf("\nJust before sceSdRemoveValue_():\n");
-    printf("ctx1.mode: %d ctx1.keyLength: %d\n", ctx1.mode, ctx1.keyLength);
-    printf("ctx1.result: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.result[i]);
-    }
-    printf("\n");
-    printf("ctx1.key: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.key[i]);
-    }
-    printf("\n");
-
-
         if (sceSdRemoveValue_(ctx1, data, 0x10) < 0)
                 return -3;
         //if (sceChnnlsv_850A7FA1_(&ctx2, data + 0x10, *alignedLen) < 0) // EMCC_CHANGE
-
-
-    printf("\nJust before sceSdSetMember_():\n");
-    printf("ctx2.mode: %d ctx2.unkn: %d\n", ctx2.mode, ctx2.unkn);
-    printf("ctx2.cryptedData: ");
-    for (int i = 0; i < 0x92; i++) {
-        printf("%02x", ctx2.cryptedData[i]);
-    }
-    printf("\n");
-
         if (sceSdSetMember_(ctx2, data + 0x10, *alignedLen) < 0)
                 return -4;
     
     /* Clear any extra bytes left from the previous steps */
     memset(data + 0x10 + *dataLen, 0, *alignedLen - *dataLen);
 
-    printf("\nJust before sceSdRemoveValue_():\n");
-    printf("ctx1.mode: %d ctx1.keyLength: %d\n", ctx1.mode, ctx1.keyLength);
-    printf("ctx1.result: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.result[i]);
-    }
-    printf("\n");
-    printf("ctx1.key: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.key[i]);
-    }
-    printf("\n");
-
     /* Encrypt the data */
         //if (sceChnnlsv_F21A1FCA_(&ctx1, data + 0x10, *alignedLen) < 0) // EMCC_CHANGE
         if (sceSdRemoveValue_(ctx1, data + 0x10, *alignedLen) < 0)
                 return -5;
-
-    printf("\nJust before sceChnnlsv_21BE78B4_():\n");
-     printf("ctx2.mode: %d ctx2.unkn: %d\n", ctx2.mode, ctx2.unkn);
-    printf("ctx2.cryptedData: ");
-    for (int i = 0; i < 0x92; i++) {
-        printf("%02x", ctx2.cryptedData[i]);
-    }
-    printf("\n");
 
     /* Verify encryption */
         //if (sceChnnlsv_21BE78B4_(&ctx2) < 0) // EMCC_CHANGE
         if (sceChnnlsv_21BE78B4_(ctx2) < 0)
                 return -6;
 
-    printf("\nJust before sceSdGetLastIndex_():\n");
-    printf("ctx1.mode: %d ctx1.keyLength: %d\n", ctx1.mode, ctx1.keyLength);
-    printf("ctx1.result: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.result[i]);
-    }
-    printf("\n");
-    printf("ctx1.key: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.key[i]);
-    }
-    printf("\n");
-    printf("hash: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", hash[i]);
-    }
-    printf("\n");
-    printf("cryptkey: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", cryptkey[i]);
-    }
-    printf("\n");
-
     /* Build the file hash from this PSP */
     //if (sceChnnlsv_C4C494F8_(&ctx1, hash, cryptkey) < 0) // EMCC_CHANGE
     if (sceSdGetLastIndex_(ctx1, hash, cryptkey) < 0)
                 return -7;
-
-    printf("Just after sceSdGetLastIndex_():\n");
-    printf("ctx1.mode: %d ctx1.keyLength: %d\n", ctx1.mode, ctx1.keyLength);
-    printf("ctx1.result: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.result[i]);
-    }
-    printf("\n");
-    printf("ctx1.key: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", ctx1.key[i]);
-    }
-    printf("\n");
-    printf("hash: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", hash[i]);
-    }
-    printf("\n");
-    printf("cryptkey: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", cryptkey[i]);
-    }
-    printf("\n");
 
     /* Adjust sizes to account for IV */
     *alignedLen += 0x10;

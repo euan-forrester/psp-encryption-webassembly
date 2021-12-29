@@ -38,14 +38,6 @@ int update_hashes(unsigned char *data,
           unsigned char *filehash,
           int encryptmode)
 {
-    printf("Beginning update_hashes()\n");
-    printf("len: %d, filename: '%s', encryptmode: %d\n", len, filename, encryptmode);
-    printf("filehash: ");
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", filehash[i]);
-    }
-    printf("\n");
-
     int alignedLen = align16(len);
     unsigned char *datafile, *savedata_params;
     int listLen, paramsLen;
@@ -54,26 +46,22 @@ int update_hashes(unsigned char *data,
     /* Locate SAVEDATA_PARAM section in the param.sfo. */
     if ((ret = find_psf_section("SAVEDATA_PARAMS", data, 0x1330,
                     &savedata_params, &paramsLen)) < 0) {
-        printf("1\n");
         return ret - 100;
     }
     
     /* Locate the pointer for this DATA.BIN equivalent */ 
     if ((ret = find_psf_section("SAVEDATA_FILE_LIST", data, 0x1330,
                     &datafile, &listLen)) < 0) {
-        printf("2\n");
         return ret - 200;
     }
 
     if ((ret = find_psf_datafile(filename, datafile, 
                      listLen, &datafile)) < 0) {
-        printf("4\n");
         return ret - 300;
     }
     
     /* Check minimum sizes based on where we want to write */
     if ((listLen < 0x20) || (paramsLen < 0x80)) {
-        printf("4\n");
         return -1;
     }
     
@@ -84,7 +72,6 @@ int update_hashes(unsigned char *data,
     /* Compute 11D0 hash over entire file */
     if ((ret = build_hash(filehash, data, len, alignedLen,
                   (encryptmode & 4) ? 6 : (encryptmode & 2) ? 4 :  2, NULL)) < 0) { // Not sure about "2"
-        printf("5 - got back %d. len = 0x%x, alignedLen = 0x%x\n", ret, len, alignedLen);
         return ret - 400;
     }
 
@@ -104,7 +91,6 @@ int update_hashes(unsigned char *data,
         //              3, 0)) < 0) {
         if ((ret = build_hash(filehash, data, len, alignedLen,
                       (encryptmode & 4) ? 5 : 3, 0)) < 0) {
-            printf("6\n");
             return ret - 500;
         }
         memcpy(savedata_params + 0x70, filehash, 0x10);
@@ -112,12 +98,9 @@ int update_hashes(unsigned char *data,
 
     /* Compute and insert the 11C0 hash. */
     if ((ret = build_hash(filehash, data, len, alignedLen, 1, 0)) < 0) {
-        printf("7 - got back %d. len = 0x%x, alignedLen = 0x%x\n", ret, len, alignedLen);
         return ret - 600;
     }
     memcpy(savedata_params + 0x10, filehash, 0x10);
-
-    printf("update_hashes success\n");
 
     /* All done. */
     return 0;
