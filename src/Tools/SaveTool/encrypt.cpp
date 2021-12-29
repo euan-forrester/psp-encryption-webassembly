@@ -183,7 +183,7 @@ extern "C" { // begin EMCC_CHANGE: This is a wrapper for encrypt_data(), similar
 // Note that output_filename is the basename of the file which will be written out (e.g. "DRACULA.BIN")
 // Note that the contents of data, data_len, and paramssfo_data will all be changed by this function
 
-int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *paramssfo_data, int paramssfo_len, char *output_filename, unsigned char *gamekey)
+int encrypt_save_buffer(unsigned char *data, unsigned char **data_out, int *data_len, unsigned char *paramssfo_data, int paramssfo_len, char *output_filename, unsigned char *gamekey)
 {
     if (!data || !data_len || !paramssfo_data || !paramssfo_len || !output_filename || !gamekey) {
         return -1;
@@ -242,21 +242,14 @@ int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *param
         goto cleanup;
     }
 
-    memcpy(data, aligned_data, *data_len);
+    *data_out = (unsigned char *)malloc(*data_len);
 
-    printf("d\n");
+    memcpy(*data_out, aligned_data, *data_len);
 
 cleanup:
     if (hash)               free(hash);
-    printf("aligned_gamekey: %08x, aligned_gamekey: ", (unsigned int)aligned_gamekey);
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", aligned_gamekey[i]);
-    }
-    printf("\n");
     if (aligned_gamekey)    free(aligned_gamekey);
-    printf("f\n");
     if (aligned_data)       free(aligned_data);
-    printf("g\n");
 
     return retval;
 }
