@@ -19,6 +19,8 @@
 #include "Core/HLE/HLE.h"
 #include "Core/HLE/FunctionWrappers.h"
 
+#include <stdio.h>
+
 #include "Core/HLE/sceChnnlsv.h"
 #include "Core/HLE/sceKernel.h"
 extern "C"
@@ -225,16 +227,48 @@ static int sceSdGetLastIndex(u32 addressCtx, u32 addressHash, u32 addressKey)
 
 int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key)
 {
-    if(ctx.keyLength >= 17)
+    printf("\n\nBeginning sceSdGetLastIndex_\n");
+
+    printf("ctx.mode: %d ctx1.keyLength: %d\n", ctx.mode, ctx.keyLength);
+    printf("ctx.result: ");
+    for (int i = 0; i < 0x10; i++) {
+        printf("%02x", ctx.result[i]);
+    }
+    printf("\n");
+    printf("ctx.key: ");
+    for (int i = 0; i < 0x10; i++) {
+        printf("%02x", ctx.key[i]);
+    }
+    printf("\n");
+    printf("in_hash: ");
+    for (int i = 0; i < 0x10; i++) {
+        printf("%02x", in_hash[i]);
+    }
+    printf("\n");
+    if (in_key) {
+        printf("in_key: ");
+        for (int i = 0; i < 0x10; i++) {
+            printf("%02x", in_key[i]);
+        }
+        printf("\n");
+    } else {
+        printf("in_key: NULL\n");
+    }
+    
+    if(ctx.keyLength >= 17) {
+        printf("aaa\n");
         return -1026;
+    }
 
     int num = numFromMode(ctx.mode);
 
     memset(dataBuf2, 0, 16);
 
     int res = kirkSendCmd(dataBuf, 16, num, true);
-    if(res)
+    if(res) {
+        printf("bbb: %d\n", res);
         return res;
+    }
 
     u8 data1[16], data2[16];
 
@@ -281,8 +315,10 @@ int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key)
     memcpy(data2, ctx.result, 16);
 
     int ret = sub_1510(dataBuf, 16, data2, num);
-    if(ret)
+    if(ret) {
+        printf("ccc: %d\n", res);
         return ret;
+    }
 
     if(ctx.mode == 3 || ctx.mode == 4)
         memxor(data2, hash198C, 16);
@@ -290,16 +326,21 @@ int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key)
         memxor(data2, hash19BC, 16);
 
     int cond = ((ctx.mode ^ 0x2) < 1 || (ctx.mode ^ 0x4) < 1 || ctx.mode == 6);
+    printf("******* ctx.mode: 0x%x, cond: %d\n", ctx.mode, cond);
     if(cond != 0)
     {
         memcpy(dataBuf2, data2, 16);
         int ret = kirkSendFuseCmd(dataBuf, 16, true);
-        if(ret)
+        if(ret) {
+            printf("ddd: %d\n", ret);
             return ret;
+        }
 
         int res = kirkSendCmd(dataBuf, 16, num, true);
-        if(res)
+        if(res) {
+            printf("eee: %d\n", ret);
             return res;
+        }
 
         memcpy(data2, dataBuf2, 16);
     }
@@ -314,13 +355,17 @@ int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key)
         memcpy(dataBuf2, data2, 16);
 
         int res = kirkSendCmd(dataBuf, 16, num, true);
-        if(res)
+        if(res) {
+            printf("fff: %d\n", res);
             return res;
+        }
 
         memcpy(data2, dataBuf2, 16);
     }
     memcpy(in_hash, data2, 16);
     sceSdSetIndex_(ctx, 0);
+
+    printf("ggg - finished!\n");
 
     return 0;
 }
