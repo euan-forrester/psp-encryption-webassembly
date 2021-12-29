@@ -1,11 +1,15 @@
 # kirk-engine-webassembly
 Implementation of the Kirk cryptography hardware on the PSP, compiled into webassembly
 
-This code is copied from the PPSSPP emulator: https://github.com/hrydgard/ppsspp which seems to be the most up-to-date version of this lib that I can find.
+This code is copied from the PPSSPP emulator: https://github.com/hrydgard/ppsspp which seems to be the most up-to-date implementation of PSP encryption/decryption that I can find.
+
+It also incorporates fixes from SED: https://github.com/BrianBTB/SED-PC
+
+And we may want to also include fixes from https://github.com/cielavenir/psp-savedata-endecrypter
 
 The philosophy when choosing what code to copy over has been to favour making minimal changes to the code. This results in copying over much more code than is strictly needed for what we're trying to do, but it hopefully makes it easier to update the code in the future. We rely on `emcc` to strip out any code that isn't needed from the final build.
 
-Search the code for `EMCC_CHANGE` to find the places that were changed when importing the code from PPSSPP.
+Search the code for `EMCC_CHANGE` to find the places that were changed when importing the code from the various repos listed above.
 
 If new functions are added that you want to be able to call from Javascript, they need to be added to the `makefile`. Don't forget an `extern "C"` if they're in C++ (to prevent C++ name mangling)!
 
