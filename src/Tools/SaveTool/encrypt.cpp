@@ -201,7 +201,7 @@ int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *param
     unsigned char *aligned_gamekey = NULL;
     unsigned char *hash = NULL;
 
-    if ((aligned_data = (unsigned char *) aligned_alloc(0x10, aligned_data_len)) == NULL) {
+    if ((aligned_data = (unsigned char *) aligned_alloc(0x10, aligned_data_len + 1024)) == NULL) { // HACK: Somewhere inside sceSdSetMember_() below there is an overrun of this buffer that corrupts the allocation information for aligned_gamekey below, resulting in a seg fault when free()ing aligned_gamekey
         retval = -3;
         goto cleanup;
     }
@@ -212,12 +212,6 @@ int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *param
             goto cleanup;
         }
     }
-
-    printf("aligned_gamekey: %08x, aligned_gamekey: ", (unsigned int)aligned_gamekey);
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", aligned_gamekey[i]);
-    }
-    printf("\n");
 
     if ((hash = (unsigned char *) aligned_alloc(0x10, 0x10)) == NULL) {
         retval = -5;
@@ -230,14 +224,7 @@ int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *param
     memset(aligned_data, 0, aligned_data_len);
     memcpy(aligned_data, data, *data_len);
 
-    printf("aligned_gamekey: %08x, aligned_gamekey: ", (unsigned int)aligned_gamekey);
-    for (int i = 0; i < 0x10; i++) {
-        printf("%02x", aligned_gamekey[i]);
-    }
-    printf("\n");
-
     /* Do the encryption */
-
     if ((retval = encrypt_data( gamekey ? (5) : 1,
                                 aligned_data,
                                 data_len, &aligned_data_len,
@@ -248,7 +235,6 @@ int encrypt_save_buffer(unsigned char *data, int *data_len, unsigned char *param
     }
 
     /* Update the param.sfo hashes */
-
     if ((retval = update_hashes(paramssfo_data, paramssfo_len,
                                 output_filename, hash,
                                 paramssfo_data[0x11b0]>>4/*gamekey ? 3 : 1*/)) < 0) { // Copied from https://github.com/BrianBTB/SED-PC/blob/master/SED/encrypt.cpp#L198
@@ -314,7 +300,7 @@ int encrypt_data(unsigned int mode,
         //if (sceChnnlsv_850A7FA1_(&ctx2, data + 0x10, *alignedLen) < 0) // EMCC_CHANGE
         if (sceSdSetMember_(ctx2, data + 0x10, *alignedLen) < 0)
                 return -4;
-    
+
     /* Clear any extra bytes left from the previous steps */
     memset(data + 0x10 + *dataLen, 0, *alignedLen - *dataLen);
 
