@@ -1,4 +1,4 @@
-# kirk-engine-webassembly
+# psp-encryption-webassembly
 Implementation of the Kirk cryptography hardware on the PSP, compiled into webassembly
 
 This code is copied from the PPSSPP emulator: https://github.com/hrydgard/ppsspp which seems to be the most up-to-date implementation of PSP encryption/decryption that I can find.
@@ -17,7 +17,7 @@ Suggestions are welcome!
 
 ## Exported functions
 - `init_kirk()` *** Be sure to call this first! ***
-- `kirk_init_deterministic()` Call this instead if you need your encryption to always give the same result (e.g. for tests)
+- `init_kirk_deterministic()` Call this instead if you need your encryption to always give the same result (e.g. for tests)
 - `decrypt_save_buffer()` Decrypts a buffer containing a save file
 - `encrypt_save_buffer()` Encrypts a buffer containing a save file
 
@@ -28,7 +28,7 @@ Suggestions are welcome!
 - Call the code like this:
 
 ```
-import createModule from 'path/kirk-engine-webassembly';
+import createModule from '<path>/psp-encryption-webassembly';
 
 const moduleOverrides = {
   locateFile: (s) => `relative/path/from/package.json/${s}`,
