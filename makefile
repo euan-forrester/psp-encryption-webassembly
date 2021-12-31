@@ -25,15 +25,15 @@ EXPORTED_RUNTIME_METHODS := '["ccall","cwrap","setValue","getValue"]'
 .PHONY: release debug clean
 
 release: CFLAGS=-O3 -g0
-release: kirk-engine
+release: psp-encryption
 
 debug: CFLAGS=-O0 -g3 -s SAFE_HEAP=1 -s STACK_OVERFLOW_CHECK=2 -s DEMANGLE_SUPPORT=1
-debug: kirk-engine
+debug: psp-encryption
 
 # See https://github.com/emscripten-core/emscripten/blob/main/src/settings.js for details about the various parameters set here
 
-kirk-engine: $(LIBKIRK_INCLUDES) $(LIBKIRK_SOURCES) $(ROOT_INCLUDES) $(COMMON_INCLUDES) $(CORE_INCLUDES) $(CORE_SOURCES) $(TOOLS_INCLUDES) $(TOOLS_SOURCES)
->$(CC) $(CFLAGS) -o $(OUTDIR)/kirk-engine.js $(LIBKIRK_SOURCES) $(CORE_SOURCES) $(TOOLS_SOURCES) -Isrc/ -s LLD_REPORT_UNDEFINED -s EXPORTED_FUNCTIONS=$(EXPORTED_FUNCTIONS) -s EXPORTED_RUNTIME_METHODS=$(EXPORTED_RUNTIME_METHODS) -s ENVIRONMENT='web,webview,node' -s EXPORT_ES6=1 -s MODULARIZE=1 -s USE_ES6_IMPORT_META=0 -s FILESYSTEM=0 -s EXPORT_NAME=createModule
+psp-encryption: $(LIBKIRK_INCLUDES) $(LIBKIRK_SOURCES) $(ROOT_INCLUDES) $(COMMON_INCLUDES) $(CORE_INCLUDES) $(CORE_SOURCES) $(TOOLS_INCLUDES) $(TOOLS_SOURCES)
+>$(CC) $(CFLAGS) -o $(OUTDIR)/psp-encryption.js $(LIBKIRK_SOURCES) $(CORE_SOURCES) $(TOOLS_SOURCES) -Isrc/ -s LLD_REPORT_UNDEFINED -s EXPORTED_FUNCTIONS=$(EXPORTED_FUNCTIONS) -s EXPORTED_RUNTIME_METHODS=$(EXPORTED_RUNTIME_METHODS) -s ENVIRONMENT='web,webview,node' -s EXPORT_ES6=1 -s MODULARIZE=1 -s USE_ES6_IMPORT_META=0 -s FILESYSTEM=0 -s EXPORT_NAME=createModule
 
 clean:
 >rm -f $(OUTDIR)/*
