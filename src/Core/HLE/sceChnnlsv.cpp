@@ -236,9 +236,8 @@ int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key)
     memset(dataBuf2, 0, 16);
 
     int res = kirkSendCmd(dataBuf, 16, num, true);
-    if(res) {
+    if(res)
         return res;
-    }
 
     u8 data1[16], data2[16];
 
@@ -285,9 +284,8 @@ int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key)
     memcpy(data2, ctx.result, 16);
 
     int ret = sub_1510(dataBuf, 16, data2, num);
-    if(ret) {
+    if(ret)
         return ret;
-    }
 
     if(ctx.mode == 3 || ctx.mode == 4)
         memxor(data2, hash198C, 16);
@@ -299,14 +297,12 @@ int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key)
     {
         memcpy(dataBuf2, data2, 16);
         int ret = kirkSendFuseCmd(dataBuf, 16, true);
-        if(ret) {
+        if(ret)
             return ret;
-        }
 
         int res = kirkSendCmd(dataBuf, 16, num, true);
-        if(res) {
+        if(res)
             return res;
-        }
 
         memcpy(data2, dataBuf2, 16);
     }
@@ -321,9 +317,8 @@ int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key)
         memcpy(dataBuf2, data2, 16);
 
         int res = kirkSendCmd(dataBuf, 16, num, true);
-        if(res) {
+        if(res)
             return res;
-        }
 
         memcpy(data2, dataBuf2, 16);
     }
