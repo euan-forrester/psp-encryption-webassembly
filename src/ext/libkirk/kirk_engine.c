@@ -215,6 +215,8 @@ u8 PRNG_DATA[0x14];
 
 char is_kirk_initialized; //"init" emulation
 
+u32 currtime_deterministic_seed = 0; // EMCC_CHANGE
+
 /* ------------------------- INTERNAL STUFF END ------------------------- */
 
 
@@ -454,7 +456,7 @@ int kirk_CMD14(u8 * outbuff, int outsize) {
     
   memcpy(temp+4, PRNG_DATA,0x14);
   // This uses the standard C time function for portability.
-  curtime=(u32)time(0);
+  curtime=currtime_deterministic_seed == 0 ? (u32)time(0) : currtime_deterministic_seed;
   temp[0x18] = curtime &0xFF;
   temp[0x19] = (curtime>>8) &0xFF;
   temp[0x1A] = (curtime>>16) &0xFF;
@@ -657,7 +659,20 @@ int kirk_CMD17(u8 * inbuff, int insize) {
   }
 }
 
+// begin EMCC_CHANGE
 
+// Calling this function makes it so that we get the same results every time a file is encrypted, rather than getting different results each run.
+// Note that most of kirk_init2() below is bogus because is_kirk_initialized is 0
+// In an enscripten/webassembly environment, all memory appears to be initialized when it's allocated,
+// so the dependencies on uninitialized memory don't apply here.
+
+// See kirk_CMD14() (a psuedo-random number generator) for how this value is used.
+
+int kirk_init_deterministic(u32 seed) {
+  currtime_deterministic_seed = seed;
+  return kirk_init();
+}
+// end EMCC_CHANGE
 
 int kirk_init()
 {

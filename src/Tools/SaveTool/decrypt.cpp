@@ -116,28 +116,36 @@ int decrypt_file(const char *decrypted_filename,
 
 extern "C" { // begin EMCC_CHANGE: This is a wrapper for decrypt_data(), similar to decrypt_file() above, but intended for passing in a memory buffer from javascript
 
-int decrypt_buffer(unsigned char *data, int *len, unsigned char *gamekey)
+// Note that the contents of data and len will be changed by this function
+
+int decrypt_save_buffer(unsigned char *data, int *len, unsigned char *gamekey)
 {
+    if (!data || !len || !gamekey) {
+        return -1;
+    }
+
     int aligned_len = align16(*len);
 
     int retval = 0;
 
-    int mainSdkVersion = 6; // ???
+    const int mainSdkVersion = 6; // ???
 
     unsigned char *aligned_data = NULL;
     unsigned char *aligned_gamekey = NULL;
 
     if ((aligned_data = (unsigned char *) aligned_alloc(0x10, aligned_len)) == NULL) {
         retval = -3;
-        goto out1;
+        goto cleanup;
     }
 
-    if ((aligned_gamekey = (unsigned char *) aligned_alloc(0x10, 0x10)) == NULL) {
-        retval = -4;
-        goto out2;
+    if (gamekey) {
+        if ((aligned_gamekey = (unsigned char *) aligned_alloc(0x10, 0x10)) == NULL) {
+            retval = -4;
+            goto cleanup;
+        }
     }
 
-    memcpy(aligned_gamekey, gamekey, 0x10);
+    if (gamekey) memcpy(aligned_gamekey, gamekey, 0x10);
     memset(aligned_data, 0, aligned_len);
     memcpy(aligned_data, data, *len);
 
@@ -145,17 +153,15 @@ int decrypt_buffer(unsigned char *data, int *len, unsigned char *gamekey)
                     aligned_data, len, &aligned_len,
                     aligned_gamekey)) < 0) {
         retval -= 100;
-        goto out3;
+        goto cleanup;
     }
 
     memcpy(data, aligned_data, *len);
 
- out3:
-    free(aligned_gamekey);
- out2:
-    free(aligned_data);
- out1:
- out:
+cleanup:
+    if (aligned_gamekey)    free(aligned_gamekey);
+    if (aligned_data)       free(aligned_data);
+
     return retval;
 }
 

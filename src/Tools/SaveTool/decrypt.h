@@ -11,7 +11,7 @@
  * $Id: decrypt.h 1562 2005-12-10 20:52:45Z jim $
  */
 
-//#include <pspchnnlsv.h> // EMCC_CHANGE: Not actually needed for this file. See changes in decrypt.c
+//#include <pspchnnlsv.h> // EMCC_CHANGE: Not actually needed for this file. See changes in decrypt.cpp
 
 /* Detect the samegame format and decrypt it.  See main.c for an example.  */
 int decrypt_file(const char *decrypted_filename,
