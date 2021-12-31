@@ -19,8 +19,6 @@
 #include "Core/HLE/HLE.h"
 #include "Core/HLE/FunctionWrappers.h"
 
-#include <stdio.h>
-
 #include "Core/HLE/sceChnnlsv.h"
 #include "Core/HLE/sceKernel.h"
 extern "C"
@@ -227,9 +225,8 @@ static int sceSdGetLastIndex(u32 addressCtx, u32 addressHash, u32 addressKey)
 
 int sceSdGetLastIndex_(pspChnnlsvContext1& ctx, u8* in_hash, u8* in_key)
 {
-    if(ctx.keyLength >= 17) {
+    if(ctx.keyLength >= 17)
         return -1026;
-    }
 
     int num = numFromMode(ctx.mode);
 
