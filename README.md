@@ -1,5 +1,5 @@
 # psp-encryption-webassembly
-Implementation of the Kirk cryptography hardware on the PSP, compiled into webassembly
+A copy of the implementation of the Kirk cryptography hardware on the PSP, compiled into webassembly
 
 This code is copied from the PPSSPP emulator: https://github.com/hrydgard/ppsspp which seems to be the most up-to-date implementation of PSP encryption/decryption that I can find.
 
