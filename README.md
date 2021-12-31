@@ -17,6 +17,7 @@ Suggestions are welcome!
 
 ## Exported functions
 - `init_kirk()` *** Be sure to call this first! ***
+- `kirk_init_deterministic()` Call this instead if you need your encryption to always give the same result (e.g. for tests)
 - `decrypt_save_buffer()` Decrypts a buffer containing a save file
 - `encrypt_save_buffer()` Encrypts a buffer containing a save file
 

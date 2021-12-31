@@ -19,7 +19,7 @@ TOOLS_SOURCES := $(wildcard src/Tools/*.c) $(wildcard src/Tools/**/*.cpp)
 
 ROOT_INCLUDES := $(wildcard src/*.h)
 
-EXPORTED_FUNCTIONS := '["_kirk_init","_decrypt_save_buffer","_encrypt_save_buffer","_malloc","_free"]'
+EXPORTED_FUNCTIONS := '["_kirk_init","_kirk_init_deterministic","_decrypt_save_buffer","_encrypt_save_buffer","_malloc","_free"]'
 EXPORTED_RUNTIME_METHODS := '["ccall","cwrap","setValue","getValue"]'
 
 .PHONY: release debug clean
@@ -27,7 +27,7 @@ EXPORTED_RUNTIME_METHODS := '["ccall","cwrap","setValue","getValue"]'
 release: CFLAGS=-O3 -g0
 release: kirk-engine
 
-debug: CFLAGS=-O0 -g3 -s SAFE_HEAP=1
+debug: CFLAGS=-O0 -g3 -s SAFE_HEAP=1 -s STACK_OVERFLOW_CHECK=2 -s DEMANGLE_SUPPORT=1
 debug: kirk-engine
 
 # See https://github.com/emscripten-core/emscripten/blob/main/src/settings.js for details about the various parameters set here
