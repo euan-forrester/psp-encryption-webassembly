@@ -25,7 +25,7 @@ Suggestions are welcome!
 
 - Go to the Releases tab and download the latest `.js` and `.wasm` files
 - Copy the files into your project in an appropriate directory
-- Call the code like this:
+- Basic example of how to call the code:
 
 ```
 import createModule from '<path>/psp-encryption-webassembly';
@@ -39,15 +39,9 @@ const moduleInstance = await createModule(moduleOverrides);
 const result = moduleInstance._functionName(param1, param2);
 ```
 
-To see other methods of calling the functions (using `cwrap()` and `ccall()`), check out: https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-ccall-cwrap
+Check out https://github.com/euan-forrester/save-file-converter/blob/main/frontend/src/save-formats/PSP/Savefile.js for a more in-depth example of loading the `.wasm` file in tests, dev, and prod, and how to call the code and pass in pointers, etc. This is just an example, and the method of loading the `.wasm` file in particular is very hacky. Feedback and suggested improvements are very welcome!
 
-Note that all of the parameters are pointers, so you'll need to `malloc()` and `free()` memory from javascript side, write and read to/from the pointer using `setValue()` and `getValue()`, and pass in the pointers you receive from `malloc()`
-
-In a browser environment, you may need to do some configuration of Webpack to package the `.wasm` file, since it's loaded asynchronously.
-
-Here's what I had to do:
-- Serving the file when running locally on the desktop: https://github.com/emscripten-core/emscripten/issues/10114#issuecomment-569561505 (bottom part)
-- Making the file run when everything is served from a remote webserver: good luck! If you can find a better method than me, I'd love to hear it!
+I also had to do this to make the `.wasm` file load in desktop development mode: https://github.com/euan-forrester/save-file-converter/blob/main/frontend/vue.config.js
 
 ## Building it yourself
 
