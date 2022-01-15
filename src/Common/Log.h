@@ -87,7 +87,7 @@ bool GenericLogEnabled(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type);
 */
 
 inline void GenericLog(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type,
-        const char *file, int line, const char *fmt, ...) { return; }
+        const char *file, int line, const char *fmt, ...) { }
 inline bool GenericLogEnabled(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type) { return false; }
 // EMCC_CHANGE end
 

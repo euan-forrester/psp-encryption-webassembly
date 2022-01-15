@@ -2,7 +2,7 @@
 //              Seemed liks as good a place as any to put our wrapper code
 
 #include "Core/ELF/PrxDecrypter.h"
-//#include "zlib.h"
+#include "ext/zlib/zlib.h"
 
 extern "C"
 {
