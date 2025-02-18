@@ -27,7 +27,7 @@ EXPORTED_RUNTIME_METHODS := '["ccall","cwrap","setValue","getValue"]'
 release: CFLAGS=-O3 -g0
 release: psp-encryption
 
-debug: CFLAGS=-O0 -g3 -s SAFE_HEAP=1 -s STACK_OVERFLOW_CHECK=2 -s DEMANGLE_SUPPORT=1
+debug: CFLAGS=-O0 -g3 -s SAFE_HEAP=1 -s STACK_OVERFLOW_CHECK=2
 debug: psp-encryption
 
 # See https://github.com/emscripten-core/emscripten/blob/main/src/settings.js for details about the various parameters set here
