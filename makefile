@@ -32,8 +32,10 @@ debug: psp-encryption
 
 # See https://github.com/emscripten-core/emscripten/blob/main/src/settings.js for details about the various parameters set here
 
+# Re -Wno-deprecated-non-prototype: zlib includes lots of code that throws this warning, so this quiets it
+
 psp-encryption: $(EXT_INCLUDES) $(EXT_SOURCES) $(ROOT_INCLUDES) $(COMMON_INCLUDES) $(CORE_INCLUDES) $(CORE_SOURCES) $(TOOLS_INCLUDES) $(TOOLS_SOURCES)
->$(CC) $(CFLAGS) -o $(OUTDIR)/psp-encryption.js $(EXT_SOURCES) $(CORE_SOURCES) $(TOOLS_SOURCES) -Isrc/ -s LLD_REPORT_UNDEFINED -s EXPORTED_FUNCTIONS=$(EXPORTED_FUNCTIONS) -s EXPORTED_RUNTIME_METHODS=$(EXPORTED_RUNTIME_METHODS) -s ENVIRONMENT='web,webview,node' -s EXPORT_ES6=1 -s MODULARIZE=1 -s USE_ES6_IMPORT_META=0 -s FILESYSTEM=0 -s EXPORT_NAME=createModule
+>$(CC) $(CFLAGS) -o $(OUTDIR)/psp-encryption.js $(EXT_SOURCES) $(CORE_SOURCES) $(TOOLS_SOURCES) -Isrc/ -s LLD_REPORT_UNDEFINED -s EXPORTED_FUNCTIONS=$(EXPORTED_FUNCTIONS) -s EXPORTED_RUNTIME_METHODS=$(EXPORTED_RUNTIME_METHODS) -Wno-deprecated-non-prototype -s ENVIRONMENT='web,webview,node' -s EXPORT_ES6=1 -s MODULARIZE=1 -s USE_ES6_IMPORT_META=0 -s FILESYSTEM=0 -s EXPORT_NAME=createModule
 
 clean:
 >rm -f $(OUTDIR)/*
