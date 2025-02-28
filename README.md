@@ -20,6 +20,7 @@ Suggestions are welcome!
 - `init_kirk_deterministic()` Call this instead if you need your encryption to always give the same result (e.g. for tests). Set the seed value to be non-zero.
 - `decrypt_save_buffer()` Decrypts a buffer containing a save file
 - `encrypt_save_buffer()` Encrypts a buffer containing a save file
+- `decrypt_executable()` Decrypts a buffer containing an executable
 
 ## Instructions
 

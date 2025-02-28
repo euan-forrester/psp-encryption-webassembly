@@ -75,6 +75,8 @@ enum LOG_LEVELS : int {
 
 }  // namespace
 
+// EMCC_CHANGE begin
+/*
 void GenericLog(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type,
         const char *file, int line, const char *fmt, ...)
 #ifdef __GNUC__
@@ -82,6 +84,12 @@ void GenericLog(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type,
 #endif
         ;
 bool GenericLogEnabled(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type);
+*/
+
+inline void GenericLog(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type,
+        const char *file, int line, const char *fmt, ...) { }
+inline bool GenericLogEnabled(LogTypes::LOG_LEVELS level, LogTypes::LOG_TYPE type) { return false; }
+// EMCC_CHANGE end
 
 #if defined(_DEBUG) || defined(_WIN32)
 
